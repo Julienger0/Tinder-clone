@@ -316,7 +316,8 @@ nav .logo-container .logo{
 }
 
 /* -----ChatDisplay----- */
-.chat-display{
+.chat-display,
+.matches-display{
   padding: 20px;
   height: 60vh;
   overflow-y: auto;
@@ -329,3 +330,4 @@ nav .logo-container .logo{
   display: flex;
   flex-direction: column;
 }
+
