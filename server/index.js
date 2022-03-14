@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
-require('dotend').config()
+require('dotenv').config()
 
 
 const uri = process.env.URI
