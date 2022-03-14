@@ -5,6 +5,8 @@ const { v4: uuidv4 } = require('uuid')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
+const { use } = require('express/lib/application')
+const { response } = require('express')
 
 const uri = 'mongodb+srv://juliengerr:mypassword@cluster0.j9xtl.mongodb.net/Cluster0?retryWrites=true&w=majority'
 
@@ -75,6 +77,31 @@ app.post('/login', async (req, res) => {
 
 })
 
+app.get('/user', async (req, res) => {
+    const client = new MongoClient(uri)
+    const userId = req.query.userId
+
+    try {
+        await client.connect()
+        const database = client.db('app-data')
+        const users = database.collection('users')
+
+        const query={user_id:userId}
+        const user=await users.findOne(query)
+        res.send(user)
+    }finally{
+        await client.close()
+    }
+})
+
+
+
+
+
+
+
+
+
 app.get('/users', async (req, res) => {
     const client = new MongoClient(uri)
 
@@ -114,9 +141,9 @@ app.put('/user', async (req, res) => { //put => we're gonna update our db
                 matchs: formData.matches
             },
         }
-        const insertedUser=await users.updateOne(query,updateDocument)
+        const insertedUser = await users.updateOne(query, updateDocument)
         res.send(insertedUser)
-    }finally{
+    } finally {
         await client.close()
     }
 })
