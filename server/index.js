@@ -5,10 +5,10 @@ const { v4: uuidv4 } = require('uuid')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
+require('dotend').config()
 
 
-
-const uri = 'mongodb+srv://juliengerr:mypassword@cluster0.j9xtl.mongodb.net/Cluster0?retryWrites=true&w=majority'
+const uri = process.env.URI
 
 const app = express()
 app.use(cors())
@@ -218,14 +218,14 @@ app.get('/messages', async (req, res) => {
 
 app.post('/message', async (req, res) => {
     const client = new MongoClient(uri)
-    const message=req.body.message
+    const message = req.body.message
     try {
         await client.connect()
         const database = client.db('app-data')
         const messages = database.collection('messages')
-        const insertedMessage=await messages.insertOne(message)
+        const insertedMessage = await messages.insertOne(message)
         res.send(insertedMessage)
-    }finally{
+    } finally {
         await client.close()
     }
 

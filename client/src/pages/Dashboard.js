@@ -40,25 +40,30 @@ function DashBoard() {
     }
     useEffect(() => {
         getUser()
-        getGenderedUsers()
-    }, [user, genderedUsers]);
+    }, []);
+
+    useEffect(() => {
+        if (user) {
+            getGenderedUsers()
+        }
+
+    }, [user]);
 
 
-
-    const updateMatches=async(matchedUserId)=>{
-        try{
-            const response=await axios.put('http://localhost:8000/addmatch',{
+    const updateMatches = async (matchedUserId) => {
+        try {
+            const response = await axios.put('http://localhost:8000/addmatch', {
                 userId,
                 matchedUserId
             })
-            getUser() 
-        }catch(error){
+            getUser()
+        } catch (error) {
             console.log(error)
         }
     }
 
     const swiped = (direction, swipedUserId) => {
-        if(direction==='right'){
+        if (direction === 'right') {
             updateMatches(swipedUserId)
         }
         setLastDirection(direction)
@@ -68,13 +73,13 @@ function DashBoard() {
         console.log(name + ' left the screen!')
     }
 
-    const matchedUserIds = user?.matches.map(({user_id})=>user_id).concat(userId)
+    const matchedUserIds = user?.matches.map(({ user_id }) => user_id).concat(userId)
 
-    const filteredGenderedUsers=genderedUsers?.filter(
-        genderedUser=>!matchedUserIds.includes(genderedUser.user_id)
+    const filteredGenderedUsers = genderedUsers?.filter(
+        genderedUser => !matchedUserIds.includes(genderedUser.user_id)
     )
 
-    
+
 
     return (
         <>
@@ -87,7 +92,7 @@ function DashBoard() {
                             {filteredGenderedUsers?.map((genderUser) =>
                                 <TinderCard
                                     className='swipe'
-                                    key={genderUser.first_name} onSwipe={(dir) => swiped(dir, genderUser.user_id)}
+                                    key={genderUser.user_id} onSwipe={(dir) => swiped(dir, genderUser.user_id)}
                                     onCardLeftScreen={() => outOfFrame(genderUser.first_name)}>
                                     <div style={{ backgroundImage: 'url(' + genderUser.url + ')' }}
                                         className='card'
