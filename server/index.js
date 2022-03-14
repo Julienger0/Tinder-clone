@@ -5,8 +5,8 @@ const { v4: uuidv4 } = require('uuid')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
-const { use } = require('express/lib/application')
-const { response } = require('express')
+
+
 
 const uri = 'mongodb+srv://juliengerr:mypassword@cluster0.j9xtl.mongodb.net/Cluster0?retryWrites=true&w=majority'
 
@@ -114,18 +114,12 @@ app.get('/users', async (req, res) => {
                     }
                 }
             ]
-        const foundUsers = await users.aggregate(pipeline).toArray
+        const foundUsers = await users.aggregate(pipeline).toArray()
         res.send(foundUsers)
     } finally {
         await client.close()
     }
 })
-
-
-
-
-
-
 
 app.get('/gendered-users', async (req, res) => {
     const client = new MongoClient(uri)
@@ -201,7 +195,24 @@ app.put('/addmatch', async (req, res) => {
 
 
 
+app.get('/messages', async (req, res) => {
+    const client = new MongoClient(uri)
+    const{userId,correspondingUserId}=req.query
+    console.log(userId,correspondingUserId)
+    try {
+        await client.connect()
+        const database = client.db('app-data')
+        const messages = database.collection('messages')
 
+        const query = {
+            from_userId: userId, to_userId: correspondingUserId
+        }
+        const foundMessages = await messages.find(query).toArray()
+        res.send(foundMessages)
+    } finally {
+        await client.close()
+    }
+})
 
 
 
